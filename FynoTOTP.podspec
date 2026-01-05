@@ -26,6 +26,8 @@ Pod::Spec.new do |s|
   # Source Files
   s.source_files = 'Sources/FynoTOTP/**/*.{swift}'
 
+  s.dependency "FMDB", "~> 2.7.5"
+
   # Frameworks
   s.framework = 'Foundation'
 end
