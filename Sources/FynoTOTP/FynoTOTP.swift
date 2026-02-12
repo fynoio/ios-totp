@@ -187,6 +187,16 @@ public class FynoTOTP {
         let mac = HMAC<SHA512>.authenticationCode(for: Data(message), using: k)
         return Array(mac)
     }
+    
+    // MARK: - Fetch Active Tenants
+    public func fetchActiveTenants(completion: @escaping (Result<[ActiveTenant], Error>) -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            let tenants = self.dbHelper.getActiveTenants()
+            DispatchQueue.main.async {
+                completion(.success(tenants))
+            }
+        }
+    }
 }
 
 public enum FynoError: Error {

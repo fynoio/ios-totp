@@ -168,4 +168,45 @@ public final class DatabaseHelper {
         }
         return result
     }
+    
+    public func getActiveTenants() -> [ActiveTenant] {
+        var tenants: [ActiveTenant] = []
+
+        dbQueue.inDatabase { db in
+            let rs = db.executeQuery("""
+                SELECT t.\(COLUMN_TENANT_ID),
+                       t.\(COLUMN_TENANT_LABEL),
+                       t.\(COLUMN_CONFIG_JSON)
+                FROM \(TABLE_TENANTS) t
+                JOIN \(TABLE_TENANT_KEYS) k
+                ON t.\(COLUMN_TENANT_ID) = k.\(COLUMN_TENANT_ID)
+                WHERE k.\(COLUMN_STATUS) = 1
+            """, withArgumentsIn: [])
+
+            while rs?.next() == true {
+                let tenantId = rs?.string(forColumn: COLUMN_TENANT_ID) ?? ""
+                let label = rs?.string(forColumn: COLUMN_TENANT_LABEL) ?? ""
+                let configJson = rs?.string(forColumn: COLUMN_CONFIG_JSON)
+
+                var config: TotpConfig? = nil
+                if let configJson = configJson,
+                   let data = configJson.data(using: .utf8) {
+                    config = try? JSONDecoder().decode(TotpConfig.self, from: data)
+                }
+
+                tenants.append(
+                    ActiveTenant(
+                        tenantId: tenantId,
+                        tenantLabel: label,
+                        config: config
+                    )
+                )
+            }
+
+            rs?.close()
+        }
+
+        return tenants
+    }
+
 }
