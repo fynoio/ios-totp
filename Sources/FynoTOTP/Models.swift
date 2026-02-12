@@ -55,3 +55,9 @@ public struct TotpData {
     public let config: TotpConfig
     public let status: Int
 }
+
+public struct ActiveTenant {
+    public let tenantId: String
+    public let tenantLabel: String
+    public let config: TotpConfig?
+}

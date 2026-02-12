@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'FynoTOTP'
-  s.version          = '1.0.0'
+  s.version          = '1.0.1'
   s.summary          = 'Fyno TOTP SDK for iOS – Simple, secure, multi-tenant TOTP generation.'
   s.description      = <<-DESC
     FynoTOTP is a lightweight, secure TOTP generation SDK built for iOS.
